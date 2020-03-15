@@ -15,10 +15,13 @@ Vagrant.configure("2") do |config|
     server.vm.network "private_network", ip: SERVER_IP
     server.vm.network "public_network", ip: "192.168.0.17"
     server.vm.network :forwarded_port, guest: 8500, host: 8500
-    server.vm.provision :hosts do |provisioner|
-      provisioner.sync_hosts = true
-      provisioner.add_host SERVER_IP, ['consul_server']
-    end
+
+    server.vbguest.auto_update = false
+  	server.vbguest.no_remote = true
+    #server.vm.provision :hosts do |provisioner|
+      #provisioner.sync_hosts = true
+      #provisioner.add_host SERVER_IP, ['consul_server']
+    #end
     server.vm.provider "virtualbox" do |v|
       v.memory = 1024
       v.name = SERVER_HOSTNAME
@@ -33,10 +36,11 @@ Vagrant.configure("2") do |config|
   (1..CLIENT_COUNT).each do |i|
     config.vm.define "consul_client_#{i}" do |node|
       node.vm.box = CLIENT_IMAGE
-      node.vm.network "private_network", ip: "10.140.0.7#{i+1}"
-      node.vm.provision :hosts do |provisioner|
-        provisioner.sync_hosts = true
-      end
+      node.vm.network "private_network", ip: "10.140.0.7#{i}"
+      #node.vm.provision :hosts do |provisioner|
+        #provisioner.sync_hosts = true
+        #provisioner.add_host "10.140.0.7#{i+1}", ["consul_client_#{i+1}"]
+      #end
       node.vm.provider "virtualbox" do |v|
         v.name = "consul_client#{i}"
       end
