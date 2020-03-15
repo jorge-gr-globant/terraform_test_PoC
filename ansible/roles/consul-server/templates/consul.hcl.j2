@@ -1,0 +1,12 @@
+server = true
+bootstrap_expect = {{ consul_expected_servers }}
+ui = true
+datacenter = "{{ consul_datacenter_name }}"
+data_dir = "/opt/consul"
+client_addr = "{{ consul_client_addr }}"
+advertise_addr = "{{ consul_advertise_addr }}"
+encrypt = "{{ consul_encription_key }}"
+retry_join = ["{{ consul_advertise_addr }}"]
+performance {
+  raft_multiplier = 1
+}
