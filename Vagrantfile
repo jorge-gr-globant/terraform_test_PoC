@@ -46,10 +46,10 @@ Vagrant.configure("2") do |config|
 
       node.vm.provision "ansible" do |ansible|
         ansible.playbook = "./ansible/client.yml"
-        ansible.extra_vars = {
-          CONSUL_SERVER: SERVER_IP
-          CONSUL_CURR_CLIENT: 
-        }
+        #ansible.extra_vars = {
+          #CONSUL_SERVER: SERVER_IP
+          #CONSUL_CURR_CLIENT: 
+        #}
       end
     end
   end
