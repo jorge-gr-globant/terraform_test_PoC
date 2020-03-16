@@ -50,3 +50,29 @@
     name: consul
     state: started
     enabled: yes
+
+- name: Ensure consul policies dir is configured correctly
+  file:
+    path: /opt/consul/policies
+    owner: consul
+    state: directory
+
+- name: Ensure agent policy file is present
+  copy: 
+    src: agent-policy.hcl
+    dest: /opt/consul/policies/agent-policy.hcl
+
+- name: Create consul agent policy
+  shell: consul acl policy create -name "consul-agent-policy" -description "Consul agent policy" -rules @/opt/consul/policies/agent-policy.hcl 
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_master_token }}"
+  ignore_errors: True
+
+- name: Create consul agent token
+  shell: consul acl token create -description "Consul agent token" -policy-name "consul-agent-policy" | grep -Po 'SecretID:\s*\K[0-9a-z-]*'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_master_token }}"
+  register: consul_agent_token
+
+- debug: msg="{{ consul_agent_token.stdout }}"
+

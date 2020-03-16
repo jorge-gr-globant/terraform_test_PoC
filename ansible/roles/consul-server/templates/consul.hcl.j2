@@ -10,3 +10,11 @@ retry_join = ["{{ consul_advertise_addr }}"]
 performance {
   raft_multiplier = 1
 }
+acl {
+  enabled = true
+  default_policy = "deny"
+  down_policy = "extend-cache"
+  tokens {
+    master = "{{ consul_master_token }}"
+  }
+}
