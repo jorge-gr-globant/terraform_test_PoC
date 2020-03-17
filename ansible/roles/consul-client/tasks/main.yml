@@ -1,3 +1,0 @@
----
-# tasks file for consul
-- include: consul.yml
