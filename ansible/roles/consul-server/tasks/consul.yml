@@ -51,6 +51,20 @@
     state: started
     enabled: yes
 
+- name: Ensure consul acl system is ready
+  shell: |
+    consul acl policy list &> /dev/null
+    VALUE=$?
+    echo "Waiting until consul's ACL system is ready"
+    while [ $VALUE -ne 0 ]; do
+      consul acl policy list &> /dev/null
+      VALUE=$?
+    done
+  args:
+    executable: /bin/bash
+  environment:
+        CONSUL_HTTP_TOKEN: "{{ consul_master_token }}"
+
 - name: Ensure consul policies dir is configured correctly
   file:
     path: /opt/consul/policies
@@ -75,4 +89,3 @@
   register: consul_agent_token
 
 - debug: msg="{{ consul_agent_token.stdout }}"
-

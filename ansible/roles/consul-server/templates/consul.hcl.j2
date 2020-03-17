@@ -6,7 +6,7 @@ data_dir = "/opt/consul"
 client_addr = "{{ consul_client_addr }}"
 advertise_addr = "{{ consul_advertise_addr }}"
 encrypt = "{{ consul_encription_key }}"
-retry_join = ["{{ consul_advertise_addr }}"]
+retry_join = ["{{ consul_leader_addr }}"]
 performance {
   raft_multiplier = 1
 }
