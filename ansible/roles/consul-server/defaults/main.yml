@@ -7,3 +7,4 @@ consul_advertise_addr: 10.140.0.70
 consul_leader_addr: 10.140.0.70
 consul_client_addr: 0.0.0.0
 consul_master_token: b6bd58da-5d14-11ea-b638-a0a4c567dbd5
+AWS_HOST_USER: root
