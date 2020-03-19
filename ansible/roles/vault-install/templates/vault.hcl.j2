@@ -6,9 +6,9 @@ storage "s3" {
 }
 
 ha_storage "consul" {
-  address = {{ consul_address }}
-  token = {{ lookup('aws_secret', 'vault_token') }}
-  path = {{ consul_path }}
+  address = "{{ consul_address }}:{{ consul_port }}"
+  token = "{{ lookup('aws_secret', 'vault_token') }}"
+  path = "{{ consul_path }}"
 }
 
 listener "tcp" {

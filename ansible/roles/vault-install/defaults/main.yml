@@ -5,5 +5,7 @@ vault_install_prerequisites: ['unzip']
 vault_user: "vault"
 vault_group: "vault"
 vault_config_path: "/etc/vault.hcl"
-s3_bucket_name: vault-storage
+s3_bucket_name: sdc-poc-vault-storage
 consul_path: vault/
+unseal_keys_dir_output: "{{ playbook_dir }}/unsealKey"
+consul_port: 8500
