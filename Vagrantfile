@@ -90,6 +90,17 @@ Vagrant.configure("2") do |config|
     vault.vbguest.auto_update = false
     vault.vbguest.no_remote = true
     vault.vm.provision "ansible" do |ansible|
+      ansible.playbook = "./ansible/server.yml"
+      ansible.limit = "all,localhost"
+      ansible.verbose = true
+      ansible.extra_vars = {
+        consul_addr: SERVER_IP,
+        # AWS ENV Vars
+        aws_region: aws_region,
+        access_key_id: aws_access_key_id,
+        secret_access_key: aws_secret_access_key,
+      }
+    end
   end
 
     #Configure workers
