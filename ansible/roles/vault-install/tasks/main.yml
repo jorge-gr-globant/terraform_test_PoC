@@ -15,10 +15,10 @@
     home: /etc/vault.d
 
 - name: Install prerequisites
-  package:
-    name: "{{ item }}"
+  yum:
+    name: unzip
     update_cache: yes
-  with_items: "{{ vault_install_prerequisites }}"
+    state: installed
 
 - name: Download binary
   get_url:
@@ -77,6 +77,18 @@
   set_fact:
     vault_init_parsed: "{{ vault_init_results.stdout | from_json }}"
 
+- name: Write unseal keys to files
+  copy:
+    dest: "{{ unseal_keys_dir_output }}/unseal_key_{{ item.0 }}"
+    content: "{{ item.1 }}"
+  with_indexed_items: "{{ vault_init_parsed.unseal_keys_hex }}"
+  delegate_to: localhost
+
+- name: Write root token to file
+  copy:
+    content: "{{ vault_init_parsed.root_token }}"
+    dest: "{{root_token_dir_output}}/rootkey"
+  delegate_to: localhost
 
 - name: Reading unseal key contents
   command: cat {{item}}
@@ -89,5 +101,5 @@
   shell: |
     vault operator unseal {{ item.stdout }}
   environment:
-    VAULT_ADDR: "http://127.0.0.1:8200"
+    VAULT_ADDR: "http://0.0.0.0:8200"
   with_items: "{{unseal_keys.results}}"
