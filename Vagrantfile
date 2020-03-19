@@ -59,6 +59,7 @@ Vagrant.configure("2") do |config|
           ansible.limit = "all,localhost"
           ansible.playbook = "./ansible/server.yml"
           ansible.verbose = true
+          ansible.limit = "vault"
           ansible.extra_vars = {
             consul_leader_addr: "SERVER_IP#{i - 1}",
             consul_advertise_addr: SERVER_IP,
@@ -90,11 +91,10 @@ Vagrant.configure("2") do |config|
     vault.vbguest.auto_update = false
     vault.vbguest.no_remote = true
     vault.vm.provision "ansible" do |ansible|
-      ansible.playbook = "./ansible/server.yml"
-      ansible.limit = "all,localhost"
+      ansible.playbook = "./ansible/vault.yml"
       ansible.verbose = true
       ansible.extra_vars = {
-        consul_addr: SERVER_IP,
+        consul_address: SERVER_IP,
         # AWS ENV Vars
         aws_region: aws_region,
         access_key_id: aws_access_key_id,

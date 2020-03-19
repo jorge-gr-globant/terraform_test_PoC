@@ -7,7 +7,7 @@ storage "s3" {
 
 ha_storage "consul" {
   address = {{ consul_address }}
-  token = {{ lookup('vault_token') }}
+  token = {{ lookup('aws_secret', 'vault_token') }}
   path = {{ consul_path }}
 }
 
