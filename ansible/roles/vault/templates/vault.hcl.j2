@@ -1,0 +1,29 @@
+api_addr = "{{ api_address }}"
+
+storage "s3" {
+  access_key = "{{ access_key_id }}"
+  secret_key = "{{ secret_access_key }}"
+  bucket     = "{{ s3_bucket_name }}"
+  region	 = "{{ aws_region }}"
+}
+
+#ha_storage "consul" {
+#  address = "{{ consul_address }}:{{ consul_port }}"
+#  token = "{{ lookup('aws_secret', 'vault_token') }}"
+#  path = "{{ consul_path }}"
+#}
+
+listener "tcp" {
+	address     = "0.0.0.0:8200"
+	tls_disable = 1
+}
+
+seal "awskms" {
+  region = "{{ aws_region }}"
+  access_key = "{{ access_key_id }}"
+  secret_key = "{{ secret_access_key }}"
+  kms_key_id = "{{ kms_key_id }}"
+}
+
+default_lease_ttl = "168h"
+max_lease_ttl = "720h"

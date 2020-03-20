@@ -68,26 +68,34 @@
 
 
 - name: Initialise Vault operator
-  shell: /usr/local/bin/vault operator init -key-shares=5 -key-threshold=3 -format json
+  shell: /usr/local/bin/vault operator init -format json
   environment:
     VAULT_ADDR: "http://0.0.0.0:8200"
   register: vault_init_results
   ignore_errors: true
+  retries: 5
+  delay: 10
+  until: vault_init_results.rc == 0
 
 - name: Parse output of vault init
   set_fact:
     vault_init_parsed: "{{ vault_init_results.stdout | from_json }}"
   ignore_errors: true
 
-- name: Write unseal keys to files
-  copy:
-    dest: "{{ unseal_keys_dir_output }}/unseal_key_{{ item.0 }}"
-    content: "{{ item.1 }}"
-  with_indexed_items: "{{ vault_init_parsed.unseal_keys_hex }}"
+- name: Write hex recovery keys to aws secrets manager
+  aws_secret:
+    name: "vault_recovery_key_b64-{{ item.0 }}"
+    state: present
+    secret_type: string
+    aws_secret_key: "{{ secret_access_key }}"
+    aws_access_key: "{{ access_key_id }}"
+    region: "{{ aws_region }}"
+    secret: "{{ item.1 }}"
+  with_indexed_items: "{{ vault_init_parsed.recovery_keys_hex }}"
   become: yes
   become_user: "{{ AWS_HOST_USER }}"
   delegate_to: localhost
-  ignore_errors: true
+
 
 - name: Add vault root token for {{ ansible_default_ipv4.address }}
   aws_secret:
@@ -103,27 +111,18 @@
   delegate_to: localhost
   ignore_errors: true
 
-
-#- name: Write root token to file
-  #copy:
-    #content: "{{ vault_init_parsed.root_token }}"
-    #dest: "{{root_token_dir_output}}/rootkey"
+#- name: Reading unseal key contents
+  #command: cat {{item}}
+  #register: unseal_keys
+  #with_fileglob: "{{ unseal_keys_dir_output }}/*"
+  #delegate_to: localhost
   #become: yes
   #become_user: "{{ AWS_HOST_USER }}"
-  #delegate_to: localhost
+  #become: no
 
-- name: Reading unseal key contents
-  command: cat {{item}}
-  register: unseal_keys
-  with_fileglob: "{{ unseal_keys_dir_output }}/*"
-  delegate_to: localhost
-  become: yes
-  become_user: "{{ AWS_HOST_USER }}"
-  become: no
-
-- name: Unseal vault with unseal keys
-  shell: |
-    /usr/local/bin/vault operator unseal {{ item.stdout }}
-  environment:
-    VAULT_ADDR: "http://0.0.0.0:8200"
-  with_items: "{{unseal_keys.results}}"
+#- name: Unseal vault with unseal keys
+  #shell: |
+    #/usr/local/bin/vault operator unseal {{ item.stdout }}
+  #environment:
+    #VAULT_ADDR: "http://0.0.0.0:8200"
+  #with_items: "{{unseal_keys.results}}"

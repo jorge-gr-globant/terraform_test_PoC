@@ -5,6 +5,8 @@ aws_region = ENV['AWS_DEFAULT_REGION']
 aws_access_key_id = ENV['AWS_ACCESS_KEY_ID']
 aws_secret_access_key = ENV['AWS_SECRET_ACCESS_KEY']
 username = "#{ENV['USERNAME'] || `whoami`}"
+kms_key_id = ENV['AWS_KMS_KEY_ID']
+
 
 $set_environment_variables = <<SCRIPT
 tee "/etc/profile.d/myvars.sh" > "/dev/null" <<EOF
@@ -99,7 +101,8 @@ Vagrant.configure("2") do |config|
         aws_region: aws_region,
         access_key_id: aws_access_key_id,
         secret_access_key: aws_secret_access_key,
-        AWS_HOST_USER: username
+        AWS_HOST_USER: username,
+        kms_key_id: kms_key_id
       }
     end
   end
