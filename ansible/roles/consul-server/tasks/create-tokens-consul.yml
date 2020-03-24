@@ -1,0 +1,19 @@
+---
+- name: Create consul agent token
+  shell: consul acl token create -description "Consul agent token" -policy-name "consul-agent-policy" | grep -Po 'SecretID:\s*\K[0-9a-z-]*'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_master_token }}"
+  register: consul_agent_token
+
+- name: Add consul agent token for {{ ansible_default_ipv4.address }}
+  aws_secret:
+    name: 'consul_agent_token'
+    state: present
+    secret_type: 'string'
+    aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
+    aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
+    region: "{{ AWS_REGION }}"
+    secret: "{{ consul_agent_token.stdout }}"
+  become: yes
+  become_user: "{{ AWS_HOST_USER }}"
+  delegate_to: localhost

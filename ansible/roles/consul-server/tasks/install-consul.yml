@@ -1,0 +1,24 @@
+---
+- name: Check that consul is installed
+  shell: command -v consul 2>&1 /dev/null 
+  register: is_consul_installed
+  ignore_errors: true
+
+- name: Obtain installed consul version
+  shell: consul --version | grep -Po 'Consul\s*v\K.*'
+  register: consul_desired_version_output
+  when: is_consul_installed.rc == 0
+    
+- name: Set Consul installed version as a variable
+  set_fact: 
+    consul_installed_version: "{{ consul_desired_version_output.stdout }}"
+  when: is_consul_installed.rc == 0
+
+# Install consul only if it's not installed of the consul version is different from the installed one
+- name: Ensure consul is installed
+  unarchive: 
+    src: https://releases.hashicorp.com/consul/{{ consul_desired_version }}/consul_{{ consul_desired_version }}_linux_amd64.zip
+    dest: /usr/bin
+    remote_src: yes
+  when: is_consul_installed.rc == 1 or consul_installed_version != consul_desired_version
+

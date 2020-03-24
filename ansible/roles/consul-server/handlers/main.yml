@@ -1,2 +1,4 @@
 ---
-# handlers file for consul
+- name: Reload Consul configuration
+  shell:
+    cmd: consul reload

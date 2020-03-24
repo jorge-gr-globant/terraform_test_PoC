@@ -1,4 +1,7 @@
 ---
-# tasks file for consul
-- include: consul.yml
-- include: vault-policy-token.yml
+- include: install-consul.yml
+- include: configure-consul.yml
+- include: create-policies-consul.yml
+- include: create-tokens-consul.yml
+#- include: consul.yml
+#- include: vault-policy-token.yml
