@@ -3,3 +3,4 @@
 - include: configure-consul.yml
 - include: create-policies-consul.yml
 - include: create-tokens-consul.yml
+  when: consul_create_tokens == true

@@ -2,11 +2,13 @@
 # defaults file for consul
 consul_expected_servers: 1
 consul_datacenter_name: dc1 
-consul_home_directory: /opt/consul/
+consul_home_directory: /etc/consul.d/
 consul_encription_key: Luj2FZWwlt8475wD1WtwUQ==
 consul_advertise_addr: 10.140.0.70
 consul_leader_addr: 10.140.0.70
 consul_client_addr: 0.0.0.0
 consul_master_token: b6bd58da-5d14-11ea-b638-a0a4c567dbd5
 consul_desired_version: 1.7.1
-AWS_HOST_USER: root
+consul_create_tokens: true
+aws_host_user: root
+

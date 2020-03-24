@@ -10,12 +10,12 @@
     name: 'consul_agent_token'
     state: present
     secret_type: 'string'
-    aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
-    aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
-    region: "{{ AWS_REGION }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
+    aws_access_key: "{{ aws_access_key_id }}"
+    region: "{{ aws_region }}"
     secret: "{{ consul_agent_token.stdout }}"
   become: yes
-  become_user: "{{ AWS_HOST_USER }}"
+  become_user: "{{ aws_host_user }}"
   delegate_to: localhost
   
 - name: Create consul token for vault access
@@ -29,11 +29,11 @@
     name: 'vault_token'
     state: present
     secret_type: 'string'
-    aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
-    aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
-    region: "{{ AWS_REGION }}"
+    aws_secret_key: "{{ aws_secret_access_key }}"
+    aws_access_key: "{{ aws_access_key_id }}"
+    region: "{{ aws_region }}"
     secret: "{{ consul_token_for_vault.stdout }}"
   become: yes
-  become_user: "{{ AWS_HOST_USER }}"
+  become_user: "{{ aws_host_user }}"
   delegate_to: localhost
 
