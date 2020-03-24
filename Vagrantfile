@@ -106,27 +106,5 @@ Vagrant.configure("2") do |config|
       }
     end
   end
-
-    #Configure workers
-  #(1..CLIENT_COUNT).each do |i|
-    #config.vm.define "consul_client_#{i}" do |node|
-      #node.vm.box = CLIENT_IMAGE
-      #node.vm.network "private_network", ip: "10.140.0.7#{i}"
-      #node.vm.provider "virtualbox" do |v|
-        #v.name = "consul_client#{i}"
-      #end
-
-      #node.vbguest.auto_update = false
-      #node.vbguest.no_remote = true
-
-      #node.vm.provision "ansible" do |ansible|
-        #ansible.playbook = "./ansible/client.yml"
-        #ansible.extra_vars = {
-          #CONSUL_SERVER: SERVER_IP
-          #CONSUL_CURR_CLIENT: 
-        #}
-      #end
-    #end
-  #end
 end
 

@@ -5,7 +5,7 @@
     CONSUL_HTTP_TOKEN: "{{ consul_master_token }}"
   register: consul_agent_token
 
-- name: Add consul agent token for {{ ansible_default_ipv4.address }}
+- name: Add consul agent token in aws secrets manager
   aws_secret:
     name: 'consul_agent_token'
     state: present
@@ -17,3 +17,23 @@
   become: yes
   become_user: "{{ AWS_HOST_USER }}"
   delegate_to: localhost
+  
+- name: Create consul token for vault access
+  shell: consul acl token create -description "Vault agent token" -policy-name "vault-policy" | grep -Po 'SecretID:\s*\K[0-9a-z-]*'
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_master_token }}"
+  register: consul_token_for_vault
+
+- name: Add consul vault token created in aws secrets_manager
+  aws_secret:
+    name: 'vault_token'
+    state: present
+    secret_type: 'string'
+    aws_secret_key: "{{ AWS_SECRET_ACCESS_KEY }}"
+    aws_access_key: "{{ AWS_ACCESS_KEY_ID }}"
+    region: "{{ AWS_REGION }}"
+    secret: "{{ consul_token_for_vault.stdout }}"
+  become: yes
+  become_user: "{{ AWS_HOST_USER }}"
+  delegate_to: localhost
+

@@ -7,6 +7,5 @@ vault_group: "vault"
 vault_config_path: "/etc/vault.hcl"
 s3_bucket_name: sdc-poc-vault-storage
 consul_path: vault/
-unseal_keys_dir_output: "{{ playbook_dir }}/unsealKey"
 consul_port: 8500
 api_address: http://0.0.0.0:8200

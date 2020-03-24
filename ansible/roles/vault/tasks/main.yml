@@ -110,19 +110,3 @@
   become_user: "{{ AWS_HOST_USER }}"
   delegate_to: localhost
   ignore_errors: true
-
-#- name: Reading unseal key contents
-  #command: cat {{item}}
-  #register: unseal_keys
-  #with_fileglob: "{{ unseal_keys_dir_output }}/*"
-  #delegate_to: localhost
-  #become: yes
-  #become_user: "{{ AWS_HOST_USER }}"
-  #become: no
-
-#- name: Unseal vault with unseal keys
-  #shell: |
-    #/usr/local/bin/vault operator unseal {{ item.stdout }}
-  #environment:
-    #VAULT_ADDR: "http://0.0.0.0:8200"
-  #with_items: "{{unseal_keys.results}}"

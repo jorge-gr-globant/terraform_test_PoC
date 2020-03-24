@@ -14,6 +14,11 @@
     consul_installed_version: "{{ consul_desired_version_output.stdout }}"
   when: is_consul_installed.rc == 0
 
+- name: Install required dependencies
+  package:
+    name: unzip
+    state: present
+
 # Install consul only if it's not installed of the consul version is different from the installed one
 - name: Ensure consul is installed
   unarchive: 

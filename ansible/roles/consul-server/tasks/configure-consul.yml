@@ -73,6 +73,13 @@
   with_fileglob:
     - files/policies/*
 
+- name: Copy all policy files from module files to target
+  copy:
+    src: "{{ item }}"
+    dest: /opt/consul/policies/
+  with_fileglob:
+    - files/policies/*
+
 - name: Copy all scripts to consul_home
   copy:
     src: "{{ item }}"

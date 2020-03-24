@@ -1,14 +1,13 @@
 ---
-- name: Copy all policy files from module files to target
-  copy:
-    src: "{{ item }}"
-    dest: /opt/consul/policies/
-  with_fileglob:
-    - files/policies/*
 
-- name: Create consul agent policy
+- name: Ensure consul agent policy
   shell: consul acl policy create -name "consul-agent-policy" -description "Consul agent policy" -rules @"{{ consul_home_directory }}"policies/agent-policy.hcl 
   environment:
     CONSUL_HTTP_TOKEN: "{{ consul_master_token }}"
   ignore_errors: True
 
+- name: Ensure vault policy is present
+  shell: consul acl policy create -name "vault-policy" -description "Vault policy" -rules @"{{ consul_home_directory }}"policies/vault-policy.hcl 
+  environment:
+    CONSUL_HTTP_TOKEN: "{{ consul_master_token }}"
+  ignore_errors: True

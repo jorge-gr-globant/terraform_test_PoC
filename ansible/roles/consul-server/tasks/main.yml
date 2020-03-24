@@ -3,5 +3,3 @@
 - include: configure-consul.yml
 - include: create-policies-consul.yml
 - include: create-tokens-consul.yml
-#- include: consul.yml
-#- include: vault-policy-token.yml
